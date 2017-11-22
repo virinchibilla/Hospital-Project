@@ -73,7 +73,7 @@
           this.$session.start()
           this.$session.set('username', response.data.username)
           this.$session.set('token', response.data.token)
-          this.$session.set('admin', response.data.admin)
+          this.$session.set('role', response.data.role)
           console.log(response)
           router.push('/welcome')
         })

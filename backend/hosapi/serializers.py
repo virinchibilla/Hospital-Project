@@ -19,6 +19,11 @@ class SubjectSerializer(serializers.ModelSerializer):
         model = Subject
         fields = ( 'id', 'subject_code', 'created_id', 'blood_type', 'create_date')
 
+class SubjectIdSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
+        fields = ( 'id', 'created_id')
+
 class CancertypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cancertype

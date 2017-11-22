@@ -27,7 +27,6 @@ class IsActiveUser(permissions.BasePermission):
             return None
         return isProfileActive(apiuser)
 
-
 class IsActiveOrWaitActivationUser(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         apiuser = getApiuser(request.user.id)
@@ -58,7 +57,7 @@ def authenticate_user(request, format=None):
 	if not user:
 		return HttpResponse(status=404)
 
-	return JSONResponse({ 'username': username, 'token': token.key, 'admin': user.role=='Admin' })
+	return JSONResponse({ 'username': username, 'token': token.key, 'role': user.role })
 
 @api_view(['POST'])
 # @permission_classes((IsAuthenticated,))
@@ -147,8 +146,8 @@ def createsubject(request, format=None):
 	if user.role not in ['Admin', 'Subject editor']:
 		return HttpResponse(status=403)
 
-	from time import gmtime, strftime
-	request.data['date'] = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+	# from time import gmtime, strftime
+	# request.data['date'] = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
 	d = {'blood_type':bloodtype, 'created_id': 'hqee', 'subject_code': subjectcode, 'create_date': request.data['date'] }
 
@@ -277,3 +276,15 @@ def delete_samples(request):
 	sample = Sample.objects.get(id=int(request.data['id']))
 	sample.delete()
 	return HttpResponse({"message":"sample deleted"},status=200)
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def get_subjects_id(request, format=None):
+	subjects = Subject.objects.all()
+	subjectidSerializer = SubjectIdSerializer(subjects, many=True)
+
+	result = {
+		'subjects_id_data': subjectidSerializer.data,
+	}
+
+	return JSONResponse(result)

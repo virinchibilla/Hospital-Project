@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^hospuser_data/update/', views.update_hospuser),
     url(r'^subjectupdate/', views.update_subjects),
     url(r'^subjectdelete/', views.delete_subjects),
+    url(r'^subject_id/', views.get_subjects_id),
     url(r'^sampleupdate/', views.update_samples),
     url(r'^sampledelete/', views.delete_samples),
     url(r'^hospuser_data/(?P<username>[^/]+)/?$', views.hospuser_data),

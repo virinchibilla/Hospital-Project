@@ -4,8 +4,8 @@
     <div class="column is-full">
       <div class="tabs is-centered">
         <ul>
-          <li :class="{'is-active' : tabSelected=='subjects'}" @click="tabSelected='subjects'"><a>Subjects</a></li>
-          <li :class="{'is-active' : tabSelected=='samples'}" @click="tabSelected='samples'"><a>Samples</a></li>
+          <li :class="{'is-active' : tabSelected=='subjects'}" @click="tabSelected='subjects'" v-if="isAdmin || isSubjectEditor"><a>Subjects</a></li>
+          <li :class="{'is-active' : tabSelected=='samples'}" @click="tabSelected='samples'" v-if="isAdmin || isSampleEditor"><a>Samples</a></li>
           <li :class="{'is-active' : tabSelected=='profile'}"><a @click="tabSelected='profile'">My profile</a></li>
           <li :class="{'is-active' : tabSelected=='admin'}"><a @click="tabSelected='admin'">Admin</a></li>
           <li :class="{'is-active' : tabSelected=='logout'}"><a @click="logout">Logout</a></li>
@@ -30,14 +30,14 @@
                       <tr v-for="s in subjects">
                         <td v-html="s.id"></td>
                         <td>
-                          <input type="text" name="s.subject_code" v-model="s.subject_code">
+                          <input class="input" type="text" name="s.subject_code" v-model="s.subject_code">
                         </td>
                         <td>
-                          <input type="text" name="" v-model="s.create_date">
+                          <input class="input" type="text" name="" v-model="s.create_date">
                         </td>
                         <td v-html="s.created_id"></td>
                         <td>
-                           <input type="select">
+                           <div class="select">
                           <select v-model="s.blood_type">
                    <option>A+</option>
                    <option>A-</option>
@@ -46,6 +46,7 @@
                    <option>O</option>
                    <option>AB+</option>
                           </select> 
+                        </div>
                         </td>
                         <td>
                   <div class="button" v-on:click="update_subjects(s)">Update</div>
@@ -81,14 +82,14 @@
             </div> -->
             <div class="columns">
                <div class="column is-8">
-               <datepicker placeholder="European Format ('d-m-Y')" :config="{ dateFormat: 'd-m-Y', static: true }"></datepicker>
+               <datepicker class="input" v-model="dateselected" placeholder="European Format ('d-m-Y')" :config="{ dateFormat: 'd-m-Y', static: true }"></datepicker>
              </div>
              </div>
             <div class="columns">
               <div class="column is-2">
                 <b>Blood Type</b>
               </div>
-              <div class="column is-1">
+              <div class="column is-3">
                <div class="select">
                  <select v-model="bloodtype">
                    <option>A+</option>
@@ -123,7 +124,7 @@
               <div class="column is-2">
                <div class="select">
                  <select v-model="selectedsamplesubject">
-                   <option :value="s.id" v-for="s in subjects"> {{ s.created_id }}</option>
+                   <option :value="s.id" v-for="s in subjects_id"> {{ s.created_id }}</option>
                  </select>
                </div>
              </div>
@@ -297,7 +298,12 @@ export default {
       samples: [],
       msges: '',
       msgng: '',
-      msgngs: ''
+      msgngs: '',
+      isAdmin: '',
+      isSubjectEditor: '',
+      isSampleEditor: '',
+      dateselected: ''
+
       // hospusers_data_all: ''
         // shoppingData: {
         //   itemname: ['xj'],
@@ -375,7 +381,8 @@ export default {
         },
         data: { subjectcode: this.subjectcode,
           bloodtype: this.bloodtype,
-          subjectsid: this.subjectsid }
+          subjectsid: this.subjectsid,
+          date: this.dateselected }
       })
         .then(() => {
           this.msgs = 'subject created success'
@@ -506,17 +513,44 @@ export default {
           this.msg = error.message
         })
     },
+    get_subject_id () {
+      axios({
+        method: 'GET',
+        url: 'http://127.0.0.1:8000/hosapi/v1/subject_id/',
+        headers: {
+          Authorization: `Token ${this.$session.get('token')}`,
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((response) => {
+          this.subjects_id = response.data.subjects_id_data
+        })
+        .catch((error) => {
+          this.msg = error.message
+        })
+    },
     refactorsubjectsample (m) {
       return m
     }
   },
   beforeMount () {
     this.get_hospuser_data()
-    this.get_subjects()
-    this.get_samples()
-    this.isAdmin = this.$session.get('admin')
+    this.isAdmin = this.$session.get('role') === 'Admin'
     if (this.isAdmin) {
       this.get_hospusers_data_all()
+      this.get_subjects()
+      this.get_samples()
+      this.get_subject_id()
+      this.get_hospuser_data()
+    }
+    this.isSubjectEditor = this.$session.get('role') === 'Subject editor'
+    if (this.isSubjectEditor) {
+      this.get_subjects()
+    }
+    this.isSampleEditor = this.$session.get('role') === 'Sample editor'
+    if (this.isSampleEditor) {
+      this.get_samples()
+      this.get_subject_id()
     }
   }
 }
