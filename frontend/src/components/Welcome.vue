@@ -11,259 +11,251 @@
           <li :class="{'is-active' : tabSelected=='logout'}"><a @click="logout">Logout</a></li>
         </ul>
       </div>
-      <div id="subjects" v-if="tabSelected==='subjects'">
-                <div class="columns is-8">
-                   <div class="column">
-                    <table class="table">
-                      <thead>
-                      <tr>
-                        <th> Id</abbr></th>
-                        <th>Subject code</abbr></th>
-                        <th>Create date</abbr></th>
-                        <th> Subject ID</abbr></th>
-                        <th>Blood type</abbr></th>
-                        <th>Action</abbr></th>
-                        <th>Delete</abbr></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="s in subjects">
-                        <td v-html="s.id"></td>
-                        <td>
-                          <input class="input" type="text" name="s.subject_code" v-model="s.subject_code">
-                        </td>
-                        <td>
-                          <input class="input" type="text" name="" v-model="s.create_date">
-                        </td>
-                        <td v-html="s.created_id"></td>
-                        <td>
-                           <div class="select">
-                          <select v-model="s.blood_type">
-                   <option>A+</option>
-                   <option>A-</option>
-                   <option>B+</option>
-                   <option>B-</option>
-                   <option>O</option>
-                   <option>AB+</option>
-                          </select> 
-                        </div>
-                        </td>
-                        <td>
-                  <div class="button" v-on:click="update_subjects(s)">Update</div>
-                </td>
-                        <td><div class="button" v-on:click="delete_subjects(s)">Delete</div></td>
-                      </tr>
-                    </tbody>
-                    </table><br>{{ msg }}<br> {{ msgngs }} 
-                    <div class="columns">
-                      <div class="column is-1">
-                     <div class="button" v-on:click="get_subjects">Subjects</div>
-                   </div>
-                   </div><br>
-                 </div>
-                </div>
-        <div class="container columns">
-          <div class="column is-8">
-            <div class="columns">
-              <div class="column is-2">
-                <b>Subject Code</b>
-              </div>
-              <div class="column is-2">
-                <input v-model="subjectcode" class="input" type="text">
-              </div>
-            </div>
-           <!--  <div class="columns">
-            <div class="column is-2">
-                <b>Subject Id</b>
-              </div>
-              <div class="column is-2">
-                <input class="input" type="text">
-              </div>
-            </div> -->
-            <div class="columns">
-               <div class="column is-8">
-               <datepicker class="input" v-model="dateselected" placeholder="European Format ('d-m-Y')" :config="{ dateFormat: 'd-m-Y', static: true }"></datepicker>
-             </div>
-             </div>
-            <div class="columns">
-              <div class="column is-2">
-                <b>Blood Type</b>
-              </div>
-              <div class="column is-3">
-               <div class="select">
-                 <select v-model="bloodtype">
-                   <option>A+</option>
-                   <option>A-</option>
-                   <option>B+</option>
-                   <option>B-</option>
-                   <option>O</option>
-                   <option>AB+</option>
-                 </select>
-               </div>
-             </div>
-           </div>
-         </div>
-       </div>
-       <div class="columns is-8">
-          <div class="column is-3">
-            <p class="control">
-              <button class="button is-primary"
-              v-on:click = 'create_subject'
-              >Create Subject</button>
-            </p>
-           </div>
-          </div><br>{{ msgs }}
-     </div>
-     <div id="samples" v-if="tabSelected==='samples'">
-       <div class="container columns">
-          <div class="column is-8">
-            <div class="columns">
-              <div class="column is-2">
-                <b>SubjectID</b>
-              </div>
-              <div class="column is-2">
-               <div class="select">
-                 <select v-model="selectedsamplesubject">
-                   <option :value="s.id" v-for="s in subjects_id"> {{ s.created_id }}</option>
-                 </select>
-               </div>
-             </div>
-           </div>
-           <div class="columns">
-             <div class="column is-2">
-                <b>Cancer type</b>
-              </div>
-               <div class="column is-2">
-               <label class="checkbox">
-                <input type="checkbox" value="heart" v-model= "cancertype">Heart</label> 
-            <p>
-            <label class="checkbox">
-              <input type="checkbox" value="bone" v-model= "cancertype">Bone</label></p>   
-            <p>
-            <label class="checkbox">
-            <input type="checkbox" value="kidney" v-model= "cancertype">Kidney
-            </label></p> 
-          </div>
-           </div>
-            <div class="column is-2">
-            <p class="control">
-              <button class="button is-primary"
-              v-on:click = 'create_sample'
-              >Create Sample</button>
-            </p>
-          </div>
-          <div> {{ msges }}</div><br>
-          <div class="columns is-8">
-                   <div class="column">
-                    <table class="table" v-if="samples">
-                      <thead>
-                      <tr>
-                        <th> Id</abbr></th>
-                        <th>Subject_ID</abbr></th>
-                        <th>Cancer type</abbr></th>
-                        <th>Action</abbr></th>
-                        <th>Delete</abbr></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="m in samples">
-                        <td v-html="m.id"></td>
-                        <td v-html="m.created_id"></td>
-                      <!--   <td>
-                         <label class="checkbox">
-                          <input type="checkbox" value="heart" v-model="refactorsubjectsample(m.cancer)">Heart</label> 
-                          <label class="checkbox">
-                          <input type="checkbox" value="bone" v-model="refactorsubjectsample(m.cancer)">Bone</label> 
-                          <label class="checkbox">
-                          <input type="checkbox" value="kidney" v-model="refactorsubjectsample(m.cancer)">Kidney</label>
-                        </td> -->
-                        <td>{{ m.cancer.map(e => e.name).join(', ') }}</td>
-                        <td><div class="button" v-on:click="update_samples(m)">Update</div></td>
-                        <td><div class="button" v-on:click="delete_samples(m)">Delete</div></td>
-                      </tr>
-                    </tbody>
-                    </table>{{ msgng }}
-                    <div class="columns">
-                    <div class="button" v-on:click="get_samples">Samples</div>
-                  </div>
-                 </div>
-                </div>
-         </div>
-       </div>
-     </div>
-     <div id="profile" class="container columns" v-if="tabSelected==='profile'">
-        <div class="column is-8">
-          <div class="columns">
-            <div class="column is-2">
-             <label class="label paddingtopless">first name</label> 
-           </div>
-           <div class="column is-2">
-             <input v-model="hospuser_data.first_name"  class="input" type="text" placeholder="">
-           </div>
-         </div>
-         <div class="columns">
-          <div class="column is-2">
-           <label class="label paddingtopless">Last name</label> 
-         </div>
-         <div class="column is-2">
-           <input v-model="hospuser_data.last_name"  class="input" type="text" placeholder="">
-         </div>
-       </div>
-       <div class="columns">
-        <div class="column is-2">
-         <label class="label paddingtopless">Email</label> 
-       </div>
-       <div class="column is-3">
-         <input v-model="hospuser_data.email"   class="input" type="text" placeholder="">
-       </div>
-     </div>
-     <div class="columns">
-      <div class="column is-2">
-       <label class="label paddingtopless">User name</label> 
-     </div>
-     <div class="column is-2">
-       <input v-model="hospuser_data.username"  class="input" type="text" placeholder="">
-     </div>
-    </div>
-    </div>
-    </div>
-    <div id="admin" class="container columns" v-if="tabSelected==='admin'">
-        <div class="column is-8" v-if="isAdmin">
+      <div id="subjects" class="tabpanel" v-if="tabSelected==='subjects'">
+        <div class="columns is-8">
+         <div class="column">
           <table class="table">
             <thead>
               <tr>
-                <th>First Name</abbr></th>
-                <th>Lastname</abbr></th>
-                <th>Email</abbr></th>
-                <th>Role</abbr></th>
+                <th> Id</abbr></th>
+                <th>Subject code</abbr></th>
+                <th>Create date</abbr></th>
+                <th> Subject ID</abbr></th>
+                <th>Blood type</abbr></th>
+                <th>Action</abbr></th>
+                <th>Delete</abbr></th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="user in hospusers_data_all">
-                <td v-html="user.first_name"></td>
-                <td v-html="user.last_name"></td>
-                <td v-html="user.email"></td>
+              <tr v-for="s in subjects">
+                <td v-html="s.id"></td>
                 <td>
-                  <select class="select" v-model="user.role">
-                    <option :value="r[0]" v-for="r in roles">
-                      {{ r[0] }}
-                    </option>
-                  </select>
+                  <input class="input" type="text" name="" v-model="s.subject_code">
                 </td>
-              </tr>
-            </tbody>
-          </table>
-              <div class="column is-1">
-             <div class="button" v-on:click="update_hospuser" >Update</div>
-             {{ msg }}
-           </div>
+                <td>
+                  <input class="input" type="text" name="" v-model="s.create_date">
+                </td>
+                <td v-html="s.created_id"></td>
+                <td>
+                  <div class="select">
+                    <select v-model="s.blood_type">
+                     <option>A+</option>
+                     <option>A-</option>
+                     <option>B+</option>
+                     <option>B-</option>
+                     <option>O</option>
+                     <option>AB+</option>
+                   </select> 
+                 </div>
+               </td>
+               <td><div class="button" v-on:click="update_subjects(s)">Update</div></td>
+               <td><div class="button" v-on:click="delete_subjects(s)">Delete</div></td>
+             </tr>
+           </tbody>
+         </table><br>
+         <div class="columns">
+          <div class="column is-2">
+           <button class="button is-primary" v-on:click="get_subjects">Subjects</button>
+         </div>
+       </div><br>
+     </div>
+   </div>
+   <div class="box">
+    <div class="columns">
+      <div class="column is-8">
+        <div class="columns">
+          <div class="column is-3">
+            <b>Subject Code</b>
+          </div>
+          <div class="column is-2">
+            <input v-model="subjectcode" class="input" type="text">
+          </div>
         </div>
-        <div v-else>
-          you are not an admin
+        <div class="columns">
+          <div class="column is-3">
+            <b>DATE</b>
+          </div>
+          <div class="column is-4">
+           <datepicker :input-class="'input'" v-model="dateselected" placeholder="European Format ('d-m-Y')" :config="{ dateFormat: 'd-m-Y', static: true }">
+           </datepicker>
+         </div>
+       </div>
+       <div class="columns">
+        <div class="column is-3">
+          <b>Blood Type</b>
         </div>
-      </div>
+        <div class="column is-2">
+         <div class="select">
+           <select v-model="bloodtype">
+             <option>A+</option>
+             <option>A-</option>
+             <option>B+</option>
+             <option>B-</option>
+             <option>O</option>
+             <option>AB+</option>
+           </select>
+         </div>
+       </div>
+     </div>
    </div>
  </div>
+</div>
+<div class="column is-2">
+  <button class="button is-primary"
+  v-on:click = 'create_subject'
+  >Create Subject</button>
+</div>
+<br>{{ msgs }}
+</div>
+
+<div id="samples" class="tabpanel" v-if="tabSelected==='samples'">
+ <div class="columns">
+  <div class="column is-8">
+    <div class="columns">
+      <div class="column is-2">
+        <b>SubjectID</b>
+      </div>
+      <div class="column is-3">
+       <div class="select">
+         <select v-model="selectedsamplesubject">
+           <option :value="s.id" v-for="s in subjects_id"> {{ s.created_id }}</option>
+         </select>
+       </div>
+     </div>
+   </div>
+   <div class="columns">
+     <div class="column is-2">
+      <b>Cancer type</b>
+    </div>
+    <div class="column is-2">
+     <label class="checkbox">
+      <input type="checkbox" value="heart" v-model="cancertype">&nbsp;Heart</label> 
+      <br>
+      <label class="checkbox">
+        <input type="checkbox" value="bone" v-model="cancertype">&nbsp;Bone</label>
+        <br>
+        <label class="checkbox">
+          <input type="checkbox" value="kidney" v-model="cancertype">&nbsp;Kidney
+        </label>
+      </div>
+    </div>
+    <div class="column is-2">
+      <button class="button is-primary"
+      v-on:click = 'create_sample'
+      >Create Sample</button>
+    </div>
+  </div>
+</div>
+<br>
+  <div class="box">
+  <div class="columns">
+    <div class="column is-8">
+      <div class="columns">
+        <table class="table" v-if="samples">
+          <thead>
+            <tr>
+              <th> Id</abbr></th>
+              <th>Subject_ID</abbr></th>
+              <th>Cancer type</abbr></th>
+              <th>Action</abbr></th>
+              <th>Delete</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="m in samples">
+              <td v-html="m.id"></td>
+              <td v-html="m.created_id"></td>
+              <td>
+                <template v-for="ct in [{'name':'heart'},{'name':'bone'},{'name':'kidney'}]">
+                  <label class="checkbox">
+                    <input type="checkbox" :value="ct" v-model="m.cancer">&nbsp;{{ ct.name }}
+                  </label>
+                </template></td>
+              <td><div class="button" v-on:click="update_samples(m)">Update</div></td>
+              <td><div class="button" v-on:click="delete_samples(m)">Delete</div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      </div>
+  </div>
+</div>
+<div class="column is-2">
+  <button class="button is-primary" v-on:click="get_samples">Samples</button>
+</div>
+</div>
+<div id="profile" class="tabpanel"  v-if="tabSelected==='profile'">
+  <div class="column is-8">
+    <div class="columns">
+      <div class="column is-2">
+       <label class="label paddingtopless">First name</label> 
+     </div>
+     <div class="column is-2">
+       <input v-model="hospuser_data.first_name"  class="input" type="text" placeholder="">
+     </div>
+   </div>
+   <div class="columns">
+    <div class="column is-2">
+     <label class="label paddingtopless">Last name</label> 
+   </div>
+   <div class="column is-2">
+     <input v-model="hospuser_data.last_name"  class="input" type="text" placeholder="">
+   </div>
+ </div>
+ <div class="columns">
+  <div class="column is-2">
+   <label class="label paddingtopless">Email</label> 
+ </div>
+ <div class="column is-3">
+   <input v-model="hospuser_data.email"   class="input" type="text" placeholder="">
+ </div>
+</div>
+<div class="columns">
+  <div class="column is-2">
+   <label class="label paddingtopless">User name</label> 
+ </div>
+ <div class="column is-2">
+   <input v-model="hospuser_data.username"  class="input" type="text" placeholder="">
+ </div>
+</div>
+</div>
+</div>
+<div id="admin" class="tabpanel" v-if="tabSelected==='admin'">
+  <div class="column is-8" v-if="isAdmin">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>First Name</abbr></th>
+          <th>Lastname</abbr></th>
+          <th>Email</abbr></th>
+          <th>Role</abbr></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="user in hospusers_data_all">
+          <td v-html="user.first_name"></td>
+          <td v-html="user.last_name"></td>
+          <td v-html="user.email"></td>
+          <td>
+            <select class="select" v-model="user.role">
+              <option :value="r[0]" v-for="r in roles">
+                {{ r[0] }}
+              </option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="column is-1">
+     <div class="button" v-on:click="update_hospuser" >Update</div>
+   </div>
+ </div>
+ <div class="column is-3" v-else>
+  <b>You are not an admin</b>
+</div>
+</div>
+</div>
+</div>
 </div>
 </template>
 
@@ -289,6 +281,7 @@ export default {
       hospuser_data: '',
       subjectcode: '',
       bloodtype: '',
+      dateselected: '',
       subjectsid: '',
       msg: '',
       msgs: '',
@@ -296,14 +289,9 @@ export default {
       cancertype: [],
       selectedsamplesubject: '',
       samples: [],
-      msges: '',
-      msgng: '',
-      msgngs: '',
       isAdmin: '',
       isSubjectEditor: '',
-      isSampleEditor: '',
-      dateselected: ''
-
+      isSampleEditor: ''
       // hospusers_data_all: ''
         // shoppingData: {
         //   itemname: ['xj'],
@@ -385,7 +373,11 @@ export default {
           date: this.dateselected }
       })
         .then(() => {
-          this.msgs = 'subject created success'
+          this.msgs = ''
+          this.get_subjects()
+          this.subjectcode = ''
+          this.bloodtype = ''
+          this.dateselected = ''
         })
         .catch((error) => {
           this.msg = error.message
@@ -419,7 +411,8 @@ export default {
         data: s
       })
         .then(() => {
-          this.msg = 'UPDATED'
+          this.msg = ''
+          this.get_subjects()
         })
         .catch((error) => {
           this.msg = error.message
@@ -437,7 +430,8 @@ export default {
         data: s
       })
         .then(() => {
-          this.msgngs = 'DELETED'
+          this.msg = ''
+          this.get_subjects()
         })
         .catch((error) => {
           this.msg = error.message
@@ -455,7 +449,10 @@ export default {
           cancertype: this.cancertype }
       })
         .then(() => {
-          this.msges = 'sample created success'
+          this.msg = ''
+          this.get_samples()
+          this.selectedsamplesubject = ''
+          this.cancertype = []
         })
         .catch((error) => {
           this.msg = error.message
@@ -507,7 +504,8 @@ export default {
         data: m
       })
         .then(() => {
-          this.msgng = 'DELETED'
+          this.msg = ''
+          this.get_samples()
         })
         .catch((error) => {
           this.msg = error.message
@@ -541,7 +539,6 @@ export default {
       this.get_subjects()
       this.get_samples()
       this.get_subject_id()
-      this.get_hospuser_data()
     }
     this.isSubjectEditor = this.$session.get('role') === 'Subject editor'
     if (this.isSubjectEditor) {
@@ -558,5 +555,9 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 @import '~bulma';
+
+.tabpanel {
+  margin-left: 4em;
+}
 
 </style>

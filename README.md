@@ -17,7 +17,11 @@ To install docker, download it from [here](https://www.docker.com/products/docke
 
 ## Get started
 
-First go to the Hospital project Folder( cd hospital)
+First go to the Hospital project Folder
+
+```
+$ cd hospital
+```
 
 
 To get a list of helper commands:

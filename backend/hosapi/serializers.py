@@ -10,7 +10,6 @@ class HospuserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.role = validated_data.pop('role')
-
         instance.save()
         return instance
 
@@ -48,6 +47,13 @@ class SampleSerializer(serializers.ModelSerializer):
             sample.cancer.add(c)
 
         return sample
+
+    def update(self, instance, validated_data):
+        c = Cancertype.objects.filter(name__in=[el['name'] for el in validated_data.pop('cancer')])
+        instance.cancer = c
+        instance.save()
+
+        return instance
 
 
  

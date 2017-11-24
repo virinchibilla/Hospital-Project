@@ -20,26 +20,11 @@ from rest_framework import permissions
 
 import logging
 
-class IsActiveUser(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        apiuser = getApiuser(request.user.id)
-        if not user:
-            return None
-        return isProfileActive(apiuser)
-
-class IsActiveOrWaitActivationUser(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        apiuser = getApiuser(request.user.id)
-        if not user:
-            return None
-        return isProfileActive(apiuser)
-
 class JSONResponse(HttpResponse):
     def __init__(self, data, **kwargs):
         content = JSONRenderer().render(data)
         kwargs['content_type'] = 'application/json'
         super(JSONResponse, self).__init__(content, **kwargs)
-# Create your views here.
 
 @api_view(['POST'])
 # @permission_classes((IsAuthenticated,))
@@ -171,6 +156,14 @@ def createsubject(request, format=None):
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def get_subjects(request, format=None):
+
+	user = Hospuser.objects.get(username=request.user.username)
+
+	if not user:
+		return HttpResponse(status=404)
+	if user.role not in ['Admin', 'Subject editor']:
+		return HttpResponse(status=403)
+
 	subjects = Subject.objects.all()
 	subjectSerializer = SubjectSerializer(subjects, many=True)
 
@@ -183,10 +176,19 @@ def get_subjects(request, format=None):
 @api_view(['PUT'])
 @permission_classes((IsAuthenticated,))
 def update_subjects(request):
+
+	user = Hospuser.objects.get(username=request.user.username)
+
+	if not user:
+		return HttpResponse(status=404)
+	if user.role not in ['Admin', 'Subject editor']:
+		return HttpResponse(status=403)
+
 	logging.warn('update user')
 	request_user = request.user
 	subject_data = request.data
 	id_ob = subject_data['id']
+	subject_data['created_id'] = subject_data['subject_code'] + '-' + subject_data['create_date'][0:4] + '-' + str(id_ob)
 	subject = Subject.objects.get(id=int(id_ob))
 	subjectSerializer = SubjectSerializer(subject, subject_data)
 	if not subjectSerializer.is_valid():
@@ -199,6 +201,14 @@ def update_subjects(request):
 @api_view(['DELETE'])
 @permission_classes((IsAuthenticated,))
 def delete_subjects(request):
+
+	user = Hospuser.objects.get(username=request.user.username)
+
+	if not user:
+		return HttpResponse(status=404)
+	if user.role not in ['Admin', 'Subject editor']:
+		return HttpResponse(status=403)
+		
 	logging.warn('update user')
 	request_user = request.user
 	# subject_data = request.data
@@ -241,6 +251,13 @@ def createsample(request, format=None):
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def get_samples(request, format=None):
+
+	user = Hospuser.objects.get(username=request.user.username)
+
+	if not user:
+		return HttpResponse(status=404)
+	if user.role not in ['Admin', 'Sample editor']:
+		return HttpResponse(status=403)
 	
 	samples = Sample.objects.all()
 	sampleSerializer = SampleSerializer(samples, many=True)
@@ -254,7 +271,15 @@ def get_samples(request, format=None):
 @api_view(['PUT'])
 @permission_classes((IsAuthenticated,))
 def update_samples(request):
-	logging.warn('update user')
+
+	user = Hospuser.objects.get(username=request.user.username)
+
+	if not user:
+		return HttpResponse(status=404)
+	if user.role not in ['Admin', 'Sample editor']:
+		return HttpResponse(status=403)
+
+	logging.warn(request.data)
 	request_user = request.user
 	sample_data = request.data
 	id_ob = sample_data['id']
@@ -269,6 +294,14 @@ def update_samples(request):
 @api_view(['DELETE'])
 @permission_classes((IsAuthenticated,))
 def delete_samples(request):
+
+	user = Hospuser.objects.get(username=request.user.username)
+
+	if not user:
+		return HttpResponse(status=404)
+	if user.role not in ['Admin', 'Sample editor']:
+		return HttpResponse(status=403)
+
 	logging.warn('update user')
 	request_user = request.user
 	# subject_data = request.data
