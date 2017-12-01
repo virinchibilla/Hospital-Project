@@ -1,6 +1,6 @@
 <template>
   <div class="signup">
-    <div class="container columns">
+    <div class="tabpanel">
       <div class="column is-8">
         <div class="columns">
           <div class="column is-4">
@@ -44,7 +44,7 @@
             <b>Confirm password</b>
           </div>
           <div class="column is-4">
-            <input v-model= "confirmpassword"  class="input" type="password">
+            <input v-model= "confirmpassword" class="input" type="password">
           </div>
         </div>
         <div class="columns">
@@ -52,10 +52,9 @@
             <b>Username</b>
           </div>
           <div class="column is-4">
-            <input v-model= "username"  class="input" type="text">
+            <input v-model= "username" class="input" type="text">
           </div>
         </div>
-          <form class="column is-half">
             <div class="columns">
             <div class="column is-2">
               <p class="control">
@@ -66,7 +65,9 @@
               </p>
             </div>
           </div>
-          </form>
+          <div class="column is-4">
+          <div v-show="error" v-html="error" class="notification box is-danger"> {{ msg }}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -86,7 +87,8 @@
         email: '',
         password: '',
         confirmpassword: '',
-        username: ''
+        username: '',
+        error: ''
       }
     },
     methods: {
@@ -122,5 +124,9 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 @import '~bulma';
+
+.tabpanel {
+  margin-left: 2em;
+}
 
 </style>

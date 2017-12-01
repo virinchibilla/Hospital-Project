@@ -1,14 +1,14 @@
 <template>
 	<div class="signin">
-		<div class="container columns">
+		<div class="tabpanel">
 			<div class="column is-8">
 				<div class="columns">
 					<div class="column is-4">
 						 <h1 class="title is-1">{{ title }}</h1>
 					</div>
-				</div>
+				</div><br>
 				<div class="columns">
-					<div class="column is-2">
+					<div class="column is-1">
 						<b>Username</b>
 					</div>
 					<div class="column is-4">
@@ -16,7 +16,7 @@
                      </div>
 				</div>
 				<div class="columns">
-					<div class="column is-2">
+					<div class="column is-1">
 						<b>Password</b>
 					</div>
 					<div class="column is-4">
@@ -25,7 +25,7 @@
 				</div>
 				<form class="column is-half">
 				<div class="columns">
-            <div class="column is-3">
+            <div class="column is-2">
               <p class="control">
                 <button class="button is-primary" v-on:click = 'userlog'>Sign in</button>
               </p>
@@ -94,5 +94,9 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 @import '~bulma';
+
+.tabpanel {
+  margin-left: 2em;
+}
 
 </style>
