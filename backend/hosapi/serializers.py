@@ -10,6 +10,9 @@ class HospuserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.role = validated_data.pop('role')
+        instance.first_name = validated_data.pop('first_name')
+        instance.last_name = validated_data.pop('last_name')
+        instance.email = validated_data.pop('email')
         instance.save()
         return instance
 

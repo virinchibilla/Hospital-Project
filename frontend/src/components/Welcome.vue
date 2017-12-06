@@ -76,7 +76,8 @@
             <b>DATE</b>
           </div>
           <div class="column is-4">
-           <datepicker :input-class="'input'" v-model="dateselected" placeholder="European Format ('d-m-Y')" :config="{ dateFormat: 'd-m-Y', static: true }">
+           <datepicker :input-class="'input'" v-model="dateselected" placeholder="European Format ('d-m-Y')" :config="{ dateFormat: 'd-m-Y', static: true
+           }">
            </datepicker>
          </div>
        </div>
@@ -211,12 +212,9 @@
  </div>
 </div>
 <div class="columns">
-  <div class="column is-2">
-   <label class="label paddingtopless">User name</label> 
- </div>
- <div class="column is-2">
-   <input v-model="hospuser_data.username"  class="input" type="text" placeholder="">
- </div>
+<div class="column is-2">
+  <button class="button is-primary" v-on:click="update_profile">Update</button>
+</div>
 </div>
 </div>
 </div>
@@ -282,7 +280,6 @@ export default {
       subjectcode: '',
       bloodtype: '',
       dateselected: '',
-      subjectsid: '',
       msg: '',
       msgs: '',
       subjects: [],
@@ -342,6 +339,23 @@ export default {
           this.msg = error.message
         })
     },
+    update_profile () {
+      axios({
+        method: 'PUT',
+        url: 'http://127.0.0.1:8000/hosapi/v1/profileupdate/',
+        headers: {
+          Authorization: `Token ${this.$session.get('token')}`,
+          'Content-Type': 'application/json'
+        },
+        data: this.hospuser_data
+      })
+        .then(() => {
+          this.msg = 'profile is updated'
+        })
+        .catch((error) => {
+          this.msg = error.message
+        })
+    },
     update_hospuser () {
       axios({
         method: 'PUT',
@@ -369,7 +383,6 @@ export default {
         },
         data: { subjectcode: this.subjectcode,
           bloodtype: this.bloodtype,
-          subjectsid: this.subjectsid,
           date: this.dateselected }
       })
         .then(() => {

@@ -6,9 +6,6 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from datetime import datetime
 
-
-
-
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
@@ -19,7 +16,6 @@ class Hospuser(models.Model):
 	first_name = models.CharField(max_length=120)
 	last_name = models.CharField(max_length=120)
 	email = models.EmailField(max_length=120)
-	password = models.CharField(max_length=120)
 	username = models.CharField(max_length=120, unique=True)
 
 	ROLE = (

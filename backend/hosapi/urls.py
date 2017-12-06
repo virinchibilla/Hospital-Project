@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^hospuser_data/(?P<username>[^/]+)/?$', views.hospuser_data),
     url(r'^subjectcreation/', views.createsubject),
     url(r'^samplecreation/', views.createsample),
+    url(r'^profileupdate/', views.update_profile),
  ]

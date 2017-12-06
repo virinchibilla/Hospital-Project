@@ -62,16 +62,20 @@ def signup(request, format=None):
 	try:
 		user = User.objects.get(username=username)
 		return HttpResponse('username already exists', status=403) # user already exists
-	except User.DoesNotExist:
+	except User.DoesNotExist: #To create both django user and hospuser
 		user = User.objects.create_user(username=username, password=password, email=email)
-		b = Hospuser.objects.create(first_name=firstname, last_name=lastname, email=email, password=password, username=username)	
-
+		b = Hospuser.objects.create(first_name=firstname, last_name=lastname, email=email, username=username)	
+        
 	return HttpResponse(status=200)
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def hospuser_data(request, username):
-	user = Hospuser.objects.get(username=username)
+	# user = Hospuser.objects.get(username=request.user.username)
+	# if username != request.user.username and user.role != 'admin':
+	# 	return HttpResponse(status=403)
+
+	user = Hospuser.objects.get(username=username) # name of the username thaht I want more information
 	hospuserSerialize = HospuserSerializer(user).data
 
 	return JSONResponse(hospuserSerialize)
@@ -90,8 +94,6 @@ def hospusers_data_all(request):
 	logging.warn(users)
 	hospuserSerializer = HospuserSerializer(users, many=True)
 
-
-
 	result = {
 		'hospusers_data': hospuserSerializer.data,
 		'roles': Hospuser._meta.get_field('role').choices
@@ -106,6 +108,8 @@ def update_hospuser(request):
 	request_user = request.user
 	request_hospusers_data_all = request.data
 
+	user = Hospuser.objects.get(username=request.user.username)
+
 	logging.warn(request_hospusers_data_all)
 	for hospuser_data in request_hospusers_data_all:
 		user = Hospuser.objects.get(username=hospuser_data['username'])
@@ -116,13 +120,31 @@ def update_hospuser(request):
 
 	return HttpResponse(status=200)
 
+@api_view(['PUT'])
+@permission_classes((IsAuthenticated,))
+def update_profile(request):
+	logging.warn('update user')
+
+	request_user = request.user
+	hospuser_data = request.data
+
+
+	user = Hospuser.objects.get(username=hospuser_data['username'])
+	hospuser_data['role'] = user.role
+	hospuserSerializer = HospuserSerializer(user, hospuser_data)
+	if not hospuserSerializer.is_valid():
+		return Response(hospuserSerializer.errors)
+	hospuserSerializer.save()
+	logging.warn(hospuserSerializer.data)
+
+	return HttpResponse(status=200)
+
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def createsubject(request, format=None):
 	subjectcode = request.data['subjectcode']
 	bloodtype = request.data['bloodtype']
-	subjectsid = request.data['subjectsid']
 
 	user = Hospuser.objects.get(username=request.user.username)
 
@@ -132,7 +154,7 @@ def createsubject(request, format=None):
 		return HttpResponse(status=403)
 
 	# from time import gmtime, strftime
-	# request.data['date'] = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+	# request.data['date'] = strftime("%Y-%m-%d", gmtime())
 
 	d = {'blood_type':bloodtype, 'created_id': 'hqee', 'subject_code': subjectcode, 'create_date': request.data['date'] }
 
@@ -146,11 +168,11 @@ def createsubject(request, format=None):
 	a = subjectSerializer.save()
 	created_id = subjectcode + '-' + request.data['date'][0:4] + '-' + str(a.id)
 	logging.warn(created_id)
-	a.created_id = subjectcode + '-' + request.data['date'][0:4] + '-' + str(a.id)
+	a.created_id = created_id
 	a.save()
 
 	user.save()
-
+     
 	return HttpResponse(status=200)
 
 @api_view(['GET'])

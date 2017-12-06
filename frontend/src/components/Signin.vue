@@ -40,6 +40,9 @@
             </div>
           </div>
       </form>
+        <div class="column is-4">
+          <div v-show="error"  class="notification box is-danger"> {{ error }}</div>
+        </div>
 			</div>
 		</div>
 	</div>
@@ -57,11 +60,11 @@
     name: 'signin',
     data () {
       return {
-        msg: 'Welcome to Your Vue.js App',
         title: 'Login',
         username: '',
         password: '',
-        loginFailed: false
+        loginFailed: false,
+        error: ''
       }
     },
     methods: {
@@ -78,7 +81,9 @@
           router.push('/welcome')
         })
         .catch((error) => {
-          this.msg = error.message
+          if (error.response.status === 403) {
+            this.error = 'Check username & Password'
+          }
         })
       },
       signup () {
