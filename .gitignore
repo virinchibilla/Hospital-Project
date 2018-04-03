@@ -5,3 +5,4 @@ backup/
 *.pyc
 lib/
 bin/
+/backend/static/

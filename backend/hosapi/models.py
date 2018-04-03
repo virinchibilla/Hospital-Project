@@ -67,7 +67,7 @@ class Cancertype(models.Model):
 		return self.name
 
 class Sample(models.Model):
- 	subject = models.ForeignKey(Subject)
+ 	subject = models.ForeignKey('Subject', on_delete=models.CASCADE,)
  	cancer = models.ManyToManyField(Cancertype)
 
  	def __str__(self):
