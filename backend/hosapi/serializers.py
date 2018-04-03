@@ -53,7 +53,7 @@ class SampleSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         c = Cancertype.objects.filter(name__in=[el['name'] for el in validated_data.pop('cancer')])
-        instance.cancer = c
+        instance.cancer.set(c)
         instance.save()
 
         return instance
